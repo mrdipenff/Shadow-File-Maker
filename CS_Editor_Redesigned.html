@@ -522,6 +522,29 @@ header h1:after { content:'CUSTOMIZATION STUDIO'; display:block; margin-top:3px;
   .menu-screen { padding:26px 20px; }
 }
 
+
+/* Refined full-screen mobile-first visual refresh */
+body { background:#080d12; color:#edf7f7; }
+#mainMenuScreen { isolation:isolate; justify-content:center; align-items:center; gap:17px; padding:clamp(24px,6vh,58px) 22px calc(28px + env(safe-area-inset-bottom)); background:radial-gradient(ellipse at 50% 18%,rgba(20,184,166,.18),transparent 38%),radial-gradient(ellipse at 15% 85%,rgba(59,130,246,.12),transparent 35%),linear-gradient(160deg,#0b1118,#070a0f 68%); }
+#mainMenuScreen:before { z-index:-1; width:min(94vw,440px); height:min(94vw,440px); top:7%; border:1px solid rgba(91,234,216,.11); box-shadow:0 0 70px rgba(20,184,166,.05),inset 0 0 70px rgba(59,130,246,.035); }
+.menu-logo { width:76px; height:76px; display:grid; place-items:center; border-radius:24px; background:linear-gradient(145deg,#123d43,#122b40); border:1px solid #28636a; box-shadow:0 12px 38px rgba(0,0,0,.38),0 0 30px rgba(20,184,166,.12); font-size:34px; margin-bottom:2px; }
+.menu-title { font-size:clamp(27px,7vw,36px); letter-spacing:.14em; line-height:1.1; font-weight:900; color:#f0fffc; text-shadow:0 0 26px rgba(20,184,166,.16); }
+.menu-subtitle { max-width:320px; text-align:center; color:#93a9b4; font-size:12px; line-height:1.55; letter-spacing:.035em; }
+.coupon-badge { margin-top:2px; padding:11px 18px; font-size:13px; font-weight:650; background:rgba(14,32,40,.85); border-color:#24515a; }
+.menu-btn { width:min(100%,350px); min-height:52px; display:flex; justify-content:center; align-items:center; border-radius:15px; font-size:13px; font-weight:850; letter-spacing:.09em; transition:transform .16s ease,filter .16s ease,border-color .16s ease; }
+.menu-btn:active { transform:scale(.985); }
+.menu-btn-start { margin-top:10px; color:#041312; background:linear-gradient(115deg,#61ead1,#2bb5bd); border:1px solid #6af4db; box-shadow:0 8px 25px rgba(25,191,173,.19); }
+.menu-btn-coupon { color:#e8f6fb; background:linear-gradient(115deg,rgba(20,37,50,.98),rgba(15,28,41,.98)); border:1px solid #294755; box-shadow:0 7px 20px rgba(0,0,0,.17); }
+.menu-btn-coupon:hover { border-color:#4b9ba0; }
+#linkStatusLine { min-height:17px; margin-top:-8px !important; margin-bottom:0 !important; font-size:11px; font-weight:800; letter-spacing:.09em; color:#71e5d1; text-align:center; }
+#enterCouponOverlay .menu-btn, .modal .menu-btn { width:100%; }
+header { background:rgba(13,21,29,.98); border-bottom-color:#203540; }
+.logo-icon { border-radius:12px; background:linear-gradient(135deg,#1caeaa,#347fc2); }
+.cat-btn.active { color:#6df0d8; background:rgba(21,184,167,.09); }
+.item-card.selected { box-shadow:0 0 0 2px #2ac8b7,0 0 20px rgba(42,200,183,.19); }
+.btn-complete { background:linear-gradient(110deg,#4de0c5,#3599c8); color:#041417; border-radius:13px; font-weight:900; }
+@media(max-width:600px) { #mainMenuScreen { gap:15px; padding-left:24px; padding-right:24px; } .menu-logo { width:70px;height:70px;border-radius:22px; } .menu-btn { min-height:54px; } }
+
 </style>
 </head>
 <body>
@@ -1426,7 +1449,8 @@ async function saveCycleState() {
 }
 
 function requiredGapMs() {
-  return cycleStep === 1 ? CYCLE_GAP_MS : LINK_GAP_MS;
+  // Step 2 follows link 1 after 2 minutes; step 1 follows link 2 after 24 hours.
+  return cycleStep === 2 ? LINK_GAP_MS : CYCLE_GAP_MS;
 }
 
 function msUntilNextAvailable() {
@@ -1460,7 +1484,7 @@ function renderCouponButton() {
   btn.disabled = !available;
   btn.style.opacity = available ? '1' : '0.5';
   btn.style.cursor = available ? 'pointer' : 'not-allowed';
-  statusLine.textContent = available ? ('NEXT UP: LINK ' + cycleStep + ' OF 2 · ' + (cycleStep === 1 ? 'NEW CYCLE' : '2-MINUTE GAP')) : ('Next link available in ' + formatDuration(remaining) + '.');
+  statusLine.textContent = available ? ('READY · LINK ' + cycleStep + ' OF 2') : ('NEXT LINK IN ' + formatDuration(remaining));
 }
 
 function startLinkRefresh() {
